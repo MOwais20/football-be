@@ -1,7 +1,4 @@
-module.exports = function (express, app, lib) {
-    app.get("/", (req, res) => {
-        res.send({
-            message: "Hello, you're in the backyard!"
-        });
-    });
-}
+module.exports = function (express, app) {
+  app.use("/api/football", require("./score")(express, app));
+//   app.get("/", (req, res) => res.send("Hello World!"));
+};
