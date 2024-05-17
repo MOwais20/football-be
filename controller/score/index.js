@@ -37,10 +37,78 @@ module.exports = function (lib, db) {
     } catch (error) {
       throw error;
     }
+  };
+
+  const fixtureHead2Head = async (params) => {
+    try {
+      const response = await ScoreAPI.get("/fixtures/headtohead", {
+        params,
+      });
+
+      if (!response.data) {
+        throw new Error("No data found");
+      }
+
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const fixtureStatistics = async (params) => {
+    try {
+      const response = await ScoreAPI.get("/fixtures/statistics", {
+        params,
+      });
+
+      if (!response.data) {
+        throw new Error("No data found");
+      }
+
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const fixtureLineups = async (params) => {
+    try {
+      const response = await ScoreAPI.get("/fixtures/lineups", {
+        params,
+      });
+
+      if (!response.data) {
+        throw new Error("No data found");
+      }
+
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  const standings = async (params) => {
+    try {
+      const response = await ScoreAPI.get("/standings", {
+        params,
+      });
+
+      if (!response.data) {
+        throw new Error("No data found");
+      }
+
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
   }
 
   return {
     fetchLeagues,
     getLiveFixtures,
+    fixtureHead2Head,
+    fixtureStatistics,
+    fixtureLineups,
+    standings,
   };
 };
