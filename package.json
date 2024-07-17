@@ -7,5 +7,9 @@
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.6.2",
     "nodemon": "^3.1.0"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   }
 }

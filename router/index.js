@@ -3,7 +3,6 @@ module.exports = function (express, app) {
   app.use("/api/football", require("./score")(express, app));
   app.get("/", (req, res) => res.send({
     message: "Welcome to the Football API",
-    version: "18.5.24",
-
+    version: "17.7.24",
   }));
 };

@@ -87,5 +87,79 @@ module.exports = function (express, app, lib, db) {
     }
   });
 
+  router.get("/top-assists", async (req, res) => {
+    try {
+      const getTopAssists = await scoreController(lib, db).getTopAssists(
+        req.query
+      );
+      res.json({
+        data: getTopAssists,
+        status: 200,
+        success: true,
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message, success: false });
+    }
+  });
+
+  router.get("/top-scorers", async (req, res) => {
+    try {
+      const getTopScorers = await scoreController(lib, db).getTopScorers(
+        req.query
+      );
+      res.json({
+        data: getTopScorers,
+        status: 200,
+        success: true,
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message, success: false });
+    }
+  });
+
+  router.get("/top-red-cards", async (req, res) => {
+    try {
+      const getTopRedCards = await scoreController(lib, db).getTopRedCards(
+        req.query
+      );
+      res.json({
+        data: getTopRedCards,
+        status: 200,
+        success: true,
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message, success: false });
+    }
+  });
+
+  router.get("/top-yellow-cards", async (req, res) => {
+    try {
+      const getTopYellowCards = await scoreController(
+        lib,
+        db
+      ).getTopYellowCards(req.query);
+      res.json({
+        data: getTopYellowCards,
+        status: 200,
+        success: true,
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message, success: false });
+    }
+  });
+
+  router.get("/injuries", async (req, res) => {
+    try {
+      const injuries = await scoreController(lib, db).getInjuriesByPlayerId(req.query);
+      res.json({
+        data: injuries,
+        status: 200,
+        success: true,
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message, success: false });
+    }
+  });
+
   return router;
 };

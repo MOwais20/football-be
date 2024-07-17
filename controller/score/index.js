@@ -103,6 +103,86 @@ module.exports = function (lib, db) {
     }
   }
 
+  const getTopAssists = async (params) => {
+    try {
+      const response = await ScoreAPI.get("/players/topassists", {
+        params,
+      });
+
+      if (!response.data) {
+        throw new Error("No data found");
+      }
+
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  const getTopScorers = async (params) => {
+    try {
+      const response = await ScoreAPI.get("/players/topscorers", {
+        params,
+      });
+
+      if (!response.data) {
+        throw new Error("No data found");
+      }
+
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  const getTopRedCards = async (params) => {
+    try {
+      const response = await ScoreAPI.get("/players/topredcards", {
+        params,
+      });
+
+      if (!response.data) {
+        throw new Error("No data found");
+      }
+
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  const getTopYellowCards = async (params) => {
+    try {
+      const response = await ScoreAPI.get("/players/topyellowcards", {
+        params,
+      });
+
+      if (!response.data) {
+        throw new Error("No data found");
+      }
+
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  const getInjuriesByPlayerId = async (params) => {
+    try {
+      const response = await ScoreAPI.get("/injuries", {
+        params,
+      });
+
+      if (!response.data) {
+        throw new Error("No data found");
+      }
+
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   return {
     fetchLeagues,
     getLiveFixtures,
@@ -110,5 +190,10 @@ module.exports = function (lib, db) {
     fixtureStatistics,
     fixtureLineups,
     standings,
+    getTopAssists,
+    getTopScorers,
+    getTopRedCards,
+    getTopYellowCards,
+    getInjuriesByPlayerId,
   };
 };
