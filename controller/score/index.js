@@ -1,13 +1,27 @@
 require("dotenv").config();
 const axios = require("axios");
+const DB = require("../../config/database");
 
 const ScoreAPI = axios.create({
-  baseURL: process.env.RAPID_FLASHSCORE_BASE_URL,
+  baseURL: `https://${process.env.RAPID_SCORE_BASE_URL}`,
   headers: {
-    "X-RapidAPI-Key": process.env.RAPID_FLASHSCORE_API_KEY,
-    "X-RapidAPI-Host": process.env.RAPID_FLASHSCORE_BASE_URL,
+    "X-RapidAPI-Key": process.env.RAPID_API_KEY,
+    "X-RapidAPI-Host": process.env.RAPID_HOST,
   },
 });
+
+const flashScoreNewsTable = DB.collection("scoreLeagues");
+const flashScoreNewsDetailsTable = DB.collection("scoreLiveFixtures");
+const flashScoreLiveListTable = DB.collection("scoreFixtureHead2Head");
+const flashScoreEventsCountTable = DB.collection("scoreFixtureStatistics");
+const flashScoreStandingsTable = DB.collection("scoreFixtureLineups");
+const flashScoreTopAssistsTable = DB.collection("scoreStandings");
+const flashScoreTopScorersTable = DB.collection("scoreTopAssists");
+const flashScoreTopRedCardsTable = DB.collection("scoreTopScorers");
+const flashScoreTopYellowCardsTable = DB.collection("scoreTopRedCards");
+const flashScoreInjuriesByPlayerIdTable = DB.collection("scoreTopYellowCards");
+const flashScoreInjuriesByLeagueIdTable = DB.collection("scoreInjuriesByPlayerId");
+
 
 module.exports = function (lib, db) {
   const fetchLeagues = async (params) => {

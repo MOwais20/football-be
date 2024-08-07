@@ -15,7 +15,6 @@ const flashScoreNewsTable = DB.collection("flashScoreNews");
 const flashScoreNewsDetailsTable = DB.collection("flashScoreNewsDetails");
 const flashScoreLiveListTable = DB.collection("flashScoreLiveList");
 const flashScoreEventsCountTable = DB.collection("flashScoreEventsCount");
-
 module.exports = function (lib, db) {
   const fetchNewsList = async (params) => {
     try {
