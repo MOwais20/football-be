@@ -2,10 +2,10 @@ require("dotenv").config();
 const axios = require("axios");
 
 const ScoreAPI = axios.create({
-  baseURL: process.env.RAPID_SCORE_BASE_URL,
+  baseURL: process.env.RAPID_FLASHSCORE_BASE_URL,
   headers: {
-    "X-RapidAPI-Key": process.env.RAPID_API_KEY,
-    "X-RapidAPI-Host": process.env.RAPID_API_HOST,
+    "X-RapidAPI-Key": process.env.RAPID_FLASHSCORE_API_KEY,
+    "X-RapidAPI-Host": process.env.RAPID_FLASHSCORE_BASE_URL,
   },
 });
 
@@ -35,6 +35,7 @@ module.exports = function (lib, db) {
 
       return response.data;
     } catch (error) {
+      console.log("🚀 ~ getLiveFixtures ~ error:", error)
       throw error;
     }
   };
@@ -168,6 +169,22 @@ module.exports = function (lib, db) {
   }
 
   const getInjuriesByPlayerId = async (params) => {
+    try {
+      const response = await ScoreAPI.get("/injuries", {
+        params,
+      });
+
+      if (!response.data) {
+        throw new Error("No data found");
+      }
+
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+  
+  const getInjuriesByLeagueId = async (params) => {
     try {
       const response = await ScoreAPI.get("/injuries", {
         params,
