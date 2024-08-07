@@ -4,6 +4,6 @@ module.exports = function (express, app) {
   app.use("/api/flash", require("./flashScore")(express, app));
   app.get("/", (req, res) => res.send({
     message: "Welcome to the Football API",
-    version: "6.8.24",
+    version: "07.8.2024",
   }));
 };
