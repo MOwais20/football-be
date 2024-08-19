@@ -24,6 +24,9 @@ module.exports = function (lib, db) {
       // Check if data is already in the DB and is not older than a day
       const cachedData = await flashScoreNewsTable.findOne({
         timestamp: { $gte: oneDayAgo },
+        entity_id: params?.entity_id,
+        category_id: params?.category_id,
+        locale: params?.locale,
       });
       if (cachedData) {
         console.log("\nData fetched from cache\n");
@@ -31,6 +34,9 @@ module.exports = function (lib, db) {
           _id: cachedData._id,
           timestamp: cachedData.timestamp,
           dbRetrieved: true,
+          entity_id: params?.entity_id,
+          category_id: params?.category_id,
+          locale: params?.locale,
           ...cachedData.data,
         };
       }
@@ -47,7 +53,7 @@ module.exports = function (lib, db) {
       const data = response.data;
 
       // Store new data in the DB with a timestamp
-      await flashScoreNewsTable.insertOne({ data, timestamp: currentTime });
+      await flashScoreNewsTable.insertOne({ data, ...params, timestamp: currentTime });
 
       console.log("\nData fetched from external API\n");
 
@@ -56,12 +62,13 @@ module.exports = function (lib, db) {
         dbRetrieved: false,
       };
     } catch (error) {
-      console.log("🚀 ~ getLiveFixtures ~ error:", error.response.data);
+      console.log("🚀 ~ getLiveFixtures ~ error:", error?.response?.data);
       throw error;
     }
   };
 
   const fetchNewsDetails = async (params) => {
+    console.log("🚀 ~ fetchNewsDetails ~ params:", params)
     try {
       const currentTime = new Date();
       const oneDayAgo = new Date(currentTime.getTime() - 24 * 60 * 60 * 1000);
@@ -69,6 +76,8 @@ module.exports = function (lib, db) {
       // Check if data is already in the DB and is not older than a day
       const cachedData = await flashScoreNewsDetailsTable.findOne({
         timestamp: { $gte: oneDayAgo },
+        article_id: params?.article_id,
+        locale: params?.locale,
       });
       if (cachedData) {
         console.log("\nData fetched from cache\n");
@@ -76,6 +85,8 @@ module.exports = function (lib, db) {
           _id: cachedData._id,
           timestamp: cachedData.timestamp,
           dbRetrieved: true,
+          article_id: params?.article_id,
+          locale: params?.locale,
           ...cachedData.data,
         };
       }
@@ -95,6 +106,8 @@ module.exports = function (lib, db) {
       await flashScoreNewsDetailsTable.insertOne({
         data,
         timestamp: currentTime,
+        article_id: params?.article_id,
+        locale: params?.locale,
       });
 
       console.log("\nData fetched from external API\n");
@@ -104,7 +117,7 @@ module.exports = function (lib, db) {
         dbRetrieved: false,
       };
     } catch (error) {
-      console.log("🚀 ~ getLiveFixtures ~ error:", error.response.data);
+      console.log("🚀 ~ getLiveFixtures ~ error:", error?.response?.data);
       throw error;
     }
   };
@@ -117,6 +130,9 @@ module.exports = function (lib, db) {
       // Check if data is already in the DB and is not older than a day
       const cachedData = await flashScoreLiveListTable.findOne({
         timestamp: { $gte: oneDayAgo },
+        locale: params?.locale,
+        sport_id: params?.sport_id,
+        timezone: params?.timezone,
       });
       if (cachedData) {
         console.log("\nData fetched from cache\n");
@@ -124,6 +140,7 @@ module.exports = function (lib, db) {
           _id: cachedData._id,
           timestamp: cachedData.timestamp,
           dbRetrieved: true,
+          ...params,
           ...cachedData.data,
         };
       }
@@ -140,7 +157,7 @@ module.exports = function (lib, db) {
       const data = response.data;
 
       // Store new data in the DB with a timestamp
-      await flashScoreLiveListTable.insertOne({ data, timestamp: currentTime });
+      await flashScoreLiveListTable.insertOne({ data, ...params, timestamp: currentTime });
 
       console.log("\nData fetched from external API\n");
 
@@ -149,7 +166,7 @@ module.exports = function (lib, db) {
         dbRetrieved: false,
       };
     } catch (error) {
-      console.log("🚀 ~ getLiveFixtures ~ error:", error.response.data);
+      console.log("🚀 ~ getLiveFixtures ~ error:", error?.response?.data);
       throw error;
     }
   };
@@ -162,6 +179,8 @@ module.exports = function (lib, db) {
       // Check if data is already in the DB and is not older than a day
       const cachedData = await flashScoreEventsCountTable.findOne({
         timestamp: { $gte: oneDayAgo },
+        timezone: params?.timezone,
+        locale: params?.locale,
       });
       if (cachedData) {
         console.log("\nData fetched from cache\n");
@@ -169,6 +188,7 @@ module.exports = function (lib, db) {
           _id: cachedData._id,
           timestamp: cachedData.timestamp,
           dbRetrieved: true,
+          ...params,
           ...cachedData.data,
         };
       }
@@ -188,6 +208,7 @@ module.exports = function (lib, db) {
       await flashScoreEventsCountTable.insertOne({
         data,
         timestamp: currentTime,
+        ...params,
       });
 
       console.log("\nData fetched from external API\n");
@@ -197,7 +218,7 @@ module.exports = function (lib, db) {
         dbRetrieved: false,
       };
     } catch (error) {
-      console.log("🚀 ~ getLiveFixtures ~ error:", error.response.data);
+      console.log("🚀 ~ getLiveFixtures ~ error:", error?.response?.data);
       throw error;
     }
   };

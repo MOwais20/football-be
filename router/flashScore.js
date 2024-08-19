@@ -12,6 +12,7 @@ module.exports = function (express, app, lib, db) {
         success: true,
       });
     } catch (error) {
+      console.log("🚀 ~ router.get ~ error:", error)
       res.status(500).json({ error: error.message, success: false });
     }
   });
