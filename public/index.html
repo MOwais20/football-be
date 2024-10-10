@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Advertisement Manager</title>
+    <!-- Import Vue 3 from CDN -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- Import Vue I18n from CDN -->
+    <script src="https://unpkg.com/vue-i18n@9/dist/vue-i18n.global.js"></script>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      /* Add any required styling */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        padding: 10px;
+        text-align: left;
+        border: 1px solid #ddd;
+      }
+      button {
+        margin: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <select v-model="locale">
+        <option value="en">English</option>
+        <option value="zh">中文</option>
+      </select>
+      <div>
+        <h2>{{ $t('uploadAd') }}</h2>
+        <p>{{ $t('note') }}</p>
+        <input type="file" @change="onFileChange" />
+        <span>{{ fileName || $t('noFileChosen') }}</span>
+        <button @click="uploadFile">{{ $t('clickUpload') }}</button>
+
+        <h3>{{ $t('adList') }}</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>{{ $t('adImage') }}</th>
+              <th>{{ $t('adRedirectUrl') }}</th>
+              <th>{{ $t('uploadedAt') }}</th>
+              <th>{{ $t('delete') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(ad, index) in ads" :key="index">
+              <td>{{ index + 1 }}</td>
+              <td>
+                <img :src="ad.imageUrl" alt="Ad Image" width="100" />
+              </td>
+              <td>
+                <input
+                  v-model="ad.redirectUrl"
+                  :placeholder="$t('adRedirectUrl')"
+                />
+                <button @click="updateAd(ad)">{{ $t('clickUpdate') }}</button>
+              </td>
+              <td>{{ ad.uploadedAt }}</td>
+              <td>
+                <button @click="deleteAd(ad.id)">{{ $t('delete') }}</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script>
+      const messages = {
+        en: {
+          uploadAd: "Upload Advertisement",
+          note: "Note: Only images below 100kb in size.",
+          chooseFile: "Choose File",
+          noFileChosen: "No file chosen",
+          clickUpload: "Click to Upload",
+          adList: "Advertisement List",
+          adImage: "Ad Image",
+          adRedirectUrl: "Enter Ad Redirect URL",
+          clickUpdate: "Click to Update",
+          uploadedAt: "Uploaded At",
+          delete: "Delete",
+        },
+        zh: {
+          uploadAd: "设置广告图",
+          note: "注意：横图，大小控制在100kb以内",
+          chooseFile: "选择文件",
+          noFileChosen: "未选择任何文件",
+          clickUpload: "点击上传广告图",
+          adList: "广告图列表",
+          adImage: "广告图地址",
+          adRedirectUrl: "输入广告跳转地址",
+          clickUpdate: "点击更新",
+          uploadedAt: "上传时间",
+          delete: "删除",
+        },
+      };
+
+      const { createApp } = Vue;
+      const { createI18n } = VueI18n;
+
+      const i18n = createI18n({
+        locale: "en",
+        fallbackLocale: "en",
+        messages,
+      });
+
+      createApp({
+        data() {
+          return {
+            locale: "en",
+            fileName: "",
+            file: null,
+            ads: [],
+          };
+        },
+        watch: {
+          locale(newLocale) {
+            this.$i18n.locale = newLocale;
+          },
+        },
+        mounted() {
+          this.fetchAds();
+        },
+        methods: {
+          onFileChange(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Check if the file is an image (based on MIME type)
+            if (!file.type.startsWith("image/")) {
+              alert(this.$t("invalidFileType"));
+              this.file = null;
+              this.fileName = "";
+              return;
+            }
+
+            // Check if the file size is less than 100 KB
+            if (file.size > 100 * 1024) {
+              alert(this.$t("fileTooLarge"));
+              this.file = null;
+              this.fileName = "";
+              return;
+            }
+
+            this.file = file;
+            this.fileName = file.name;
+          },
+          async uploadFile() {
+            if (!this.file) {
+              alert(this.$t("noFileChosen"));
+              return;
+            }
+
+            const formData = new FormData();
+            formData.append("image", this.file);
+            formData.append("redirectUrl", "abcacademy.com");
+
+            try {
+              const response = await fetch("http://localhost:5000/upload", {
+                method: "POST",
+                body: formData,
+              });
+              const data = await response.json();
+
+              if (data.message) {
+                this.fetchAds();
+                this.fileName = "";
+                this.file = null;
+              } else {
+                alert(data.error || "Error uploading file");
+              }
+            } catch (error) {
+              alert("An error occurred while uploading the file.");
+            }
+          },
+          async fetchAds() {
+            try {
+              const response = await fetch("http://localhost:5000/ads");
+              const ads = await response.json();
+              this.ads = ads;
+            } catch (error) {
+              alert("An error occurred while fetching ads.");
+            }
+          },
+          async updateAd(ad) {
+            try {
+              const response = await fetch(
+                `http://localhost:5000/ads/${ad.id}`,
+                {
+                  method: "PUT",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({ redirectUrl: ad.redirectUrl }),
+                }
+              );
+              const data = await response.json();
+
+              if (data.message) {
+                alert("Redirect URL updated successfully");
+                this.fetchAds(); // Refresh the ads list to see updated data
+              } else {
+                alert(data.error || "Error updating redirect URL");
+              }
+            } catch (error) {
+              alert("An error occurred while updating the redirect URL.");
+            }
+          },
+          async deleteAd(adId) {
+            try {
+              const response = await fetch(
+                `http://localhost:5000/ads/${adId}`,
+                {
+                  method: "DELETE",
+                }
+              );
+              const data = await response.json();
+
+              if (data.message) {
+                alert("Ad deleted successfully");
+                this.fetchAds(); // Refresh the ads list to see updated data
+              } else {
+                alert(data.error || "Error deleting ad");
+              }
+            } catch (error) {
+              alert("An error occurred while deleting the ad.");
+            }
+          },
+        },
+      })
+        .use(i18n)
+        .mount("#app");
+    </script>
+  </body>
+</html>

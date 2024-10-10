@@ -1,0 +1,110 @@
+/* General Styles */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 20px;
+}
+
+h2,
+h3 {
+  color: #333;
+}
+
+select {
+  margin-bottom: 20px;
+  padding: 5px;
+  font-size: 16px;
+}
+
+/* File Input and Upload Button */
+input[type="file"] {
+  margin-bottom: 10px;
+}
+
+button {
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #218838;
+}
+
+/* Table Styles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+th,
+td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background-color: #007bff;
+  color: white;
+}
+
+td img {
+  max-width: 100px;
+  height: auto;
+  border-radius: 5px;
+}
+
+/* Input and Update Button */
+input[type="text"] {
+  padding: 5px;
+  width: 80%;
+  margin-right: 5px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+}
+
+/* Delete Button */
+button.delete {
+  background-color: #dc3545;
+}
+
+button.delete:hover {
+  background-color: #c82333;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  table,
+  th,
+  td {
+    display: block;
+    width: 100%;
+  }
+
+  th {
+    background-color: #007bff;
+  }
+
+  th,
+  td {
+    box-sizing: border-box;
+    width: 100%;
+  }
+
+  td img {
+    width: 100%;
+  }
+
+  input[type="text"] {
+    width: calc(100% - 100px);
+    margin-bottom: 10px;
+  }
+}
