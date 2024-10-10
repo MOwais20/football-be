@@ -4,7 +4,11 @@ const multer = require('multer');
 const app = express();
 var cors = require('cors')
 
-app.use(cors())
+app.use(cors({
+  origin: '*', // Allow all origins
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow specific HTTP methods
+  allowedHeaders: ['Content-Type', 'Authorization'] // Allow specific headers if needed
+}));
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
