@@ -161,7 +161,7 @@
 
             const formData = new FormData();
             formData.append("image", this.file);
-            formData.append("redirectUrl", "abcacademy.com");
+            formData.append("redirectUrl", "");
 
             try {
               const response = await fetch("http://localhost:5000/upload", {
