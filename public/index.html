@@ -119,6 +119,7 @@
             fileName: "",
             file: null,
             ads: [],
+            apiBaseUrl: "https://backyard.marche.pk"
           };
         },
         watch: {
@@ -164,7 +165,7 @@
             formData.append("redirectUrl", "");
 
             try {
-              const response = await fetch("http://localhost:5000/upload", {
+              const response = await fetch(`${apiBaseUrl}/upload`, {
                 method: "POST",
                 body: formData,
               });
@@ -183,7 +184,7 @@
           },
           async fetchAds() {
             try {
-              const response = await fetch("http://localhost:5000/ads");
+              const response = await fetch(`${apiBaseUrl}/ads`);
               const ads = await response.json();
               this.ads = ads;
             } catch (error) {
@@ -193,7 +194,7 @@
           async updateAd(ad) {
             try {
               const response = await fetch(
-                `http://localhost:5000/ads/${ad.id}`,
+                `${apiBaseUrl}/ads/${ad.id}`,
                 {
                   method: "PUT",
                   headers: {
@@ -217,7 +218,7 @@
           async deleteAd(adId) {
             try {
               const response = await fetch(
-                `http://localhost:5000/ads/${adId}`,
+                `${apiBaseUrl}/ads/${adId}`,
                 {
                   method: "DELETE",
                 }
