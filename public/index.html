@@ -165,7 +165,7 @@
             formData.append("redirectUrl", "");
 
             try {
-              const response = await fetch(`${apiBaseUrl}/upload`, {
+              const response = await fetch(`${this.apiBaseUrl}/upload`, {
                 method: "POST",
                 body: formData,
               });
@@ -184,7 +184,7 @@
           },
           async fetchAds() {
             try {
-              const response = await fetch(`${apiBaseUrl}/ads`);
+              const response = await fetch(`${this.apiBaseUrl}/ads`);
               const ads = await response.json();
               this.ads = ads;
             } catch (error) {
@@ -194,7 +194,7 @@
           async updateAd(ad) {
             try {
               const response = await fetch(
-                `${apiBaseUrl}/ads/${ad.id}`,
+                `${this.apiBaseUrl}/ads/${ad.id}`,
                 {
                   method: "PUT",
                   headers: {
@@ -218,7 +218,7 @@
           async deleteAd(adId) {
             try {
               const response = await fetch(
-                `${apiBaseUrl}/ads/${adId}`,
+                `${this.apiBaseUrl}/ads/${adId}`,
                 {
                   method: "DELETE",
                 }

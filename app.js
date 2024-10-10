@@ -2,6 +2,9 @@ const express = require("express");
 const path = require('path');
 const multer = require('multer');
 const app = express();
+var cors = require('cors')
+
+app.use(cors())
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
