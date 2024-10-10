@@ -71,6 +71,43 @@
           </tbody>
         </table>
       </div>
+
+      <section class="switch_section">
+        <div>
+          <label>{{ $t('switchLabel') }}</label>
+          <div class="search-bar">
+            <input
+              v-model="switchUrl"
+              :placeholder="$t('switchSearchPlaceholder')"
+            />
+            <button @click="updateAdConfig({ url: switchUrl })">
+              {{ $t('clickUpdate') }}
+            </button>
+          </div>
+        </div>
+
+        <!-- <label> {{ adConfig ? 'Ads are enabled' : 'Ads are disabled' }} </label> -->
+        <label>
+          {{ adConfig ? $t('swiitchIsEnabled') : $t('switchIsDisabled') }}
+        </label>
+
+        <div class="button-group">
+          <button
+            @click="toggleAds(true)"
+            :disabled="adConfig"
+            class="green-button"
+          >
+            {{ $t('openSwitch') }}
+          </button>
+          <button
+            @click="toggleAds(false)"
+            :disabled="!adConfig"
+            class="red-button"
+          >
+            {{ $t('closeSwitch') }}
+          </button>
+        </div>
+      </section>
     </div>
 
     <script>
@@ -87,6 +124,13 @@
           clickUpdate: "Click to Update",
           uploadedAt: "Uploaded At",
           delete: "Delete",
+          openSwitch: "Open Switch",
+          closeSwitch: "Close Switch",
+          clickUpdate: "Click to Update",
+          switchSearchPlaceholder: "Search engine address",
+          switchLabel: "Set the search engine address",
+          swiitchIsEnabled: "Ads are enabled",
+          switchIsDisabled: "Ads are disabled",
         },
         zh: {
           uploadAd: "设置广告图",
@@ -100,6 +144,13 @@
           clickUpdate: "点击更新",
           uploadedAt: "上传时间",
           delete: "删除",
+          openSwitch: "打开开关",
+          closeSwitch: "关闭开关",
+          clickUpdate: "点击更新",
+          switchSearchPlaceholder: "搜索引擎地址",
+          switchLabel: "设置搜索引擎的地址",
+          swiitchIsEnabled: "广告已启用",
+          switchIsDisabled: "广告已禁用",
         },
       };
 
@@ -119,7 +170,10 @@
             fileName: "",
             file: null,
             ads: [],
-            apiBaseUrl: "https://backyard.marche.pk"
+            // apiBaseUrl: "https://backyard.marche.pk"
+            apiBaseUrl: "http://localhost:5000",
+            adConfig: false,
+            switchUrl: "",
           };
         },
         watch: {
@@ -129,6 +183,7 @@
         },
         mounted() {
           this.fetchAds();
+          this.fetchAdConfig();
         },
         methods: {
           onFileChange(event) {
@@ -167,7 +222,7 @@
             try {
               const response = await fetch(`${this.apiBaseUrl}/upload`, {
                 method: "POST",
-                body: formData
+                body: formData,
               });
               const data = await response.json();
 
@@ -191,18 +246,69 @@
               alert("An error occurred while fetching ads.");
             }
           },
+          async fetchAdConfig() {
+            try {
+              const response = await fetch(`${this.apiBaseUrl}/ad-config`);
+              const data = await response.json();
+
+              this.switchUrl = data?.enable_ads?.url || "";
+              console.log("🚀 ~ fetchAdConfig ~ this.switchUrl :", this.switchUrl )
+              this.adConfig = data?.enable_ads?.enable_ads == 1 ? true : false; // Assuming enable_ads is a boolean
+            } catch (error) {
+              alert("An error occurred while fetching ad configuration.");
+            }
+          },
+          async updateAdConfig(payload) {
+            try {
+              const response = await fetch(`${this.apiBaseUrl}/ad-config`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ enable_ads: this.adConfig, ...payload }),
+              });
+              const data = await response.json();
+
+              if (data.success) {
+                // url updated successfully
+                // alert("Ad configuration updated successfully");
+              } else {
+                alert(data.error || "Error updating ad configuration");
+              }
+            } catch (error) {
+              alert("An error occurred while updating ad configuration.");
+            }
+          },
+          async toggleAds(enable) {
+            try {
+              const response = await fetch(`${this.apiBaseUrl}/ad-config`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ enable_ads: enable }),
+              });
+              const data = await response.json();
+
+              if (data.success) {
+                // alert(`Ads ${enable ? "enabled" : "disabled"} successfully`);
+                this.fetchAdConfig(); // Refresh the ad configuration
+              } else {
+                alert(data.error || "Error updating ad configuration");
+              }
+            } catch (error) {
+              alert("An error occurred while updating ad configuration.");
+            }
+          },
           async updateAd(ad) {
             try {
-              const response = await fetch(
-                `${this.apiBaseUrl}/ads/${ad.id}`,
-                {
-                  method: "PUT",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify({ redirectUrl: ad.redirectUrl }),
-                }
-              );
+              const response = await fetch(`${this.apiBaseUrl}/ads/${ad.id}`, {
+                method: "PUT",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ redirectUrl: ad.redirectUrl }),
+              });
               const data = await response.json();
 
               if (data.message) {
@@ -217,15 +323,12 @@
           },
           async deleteAd(adId) {
             try {
-              const response = await fetch(
-                `${this.apiBaseUrl}/ads/${adId}`,
-                {
-                  method: "DELETE",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                }
-              );
+              const response = await fetch(`${this.apiBaseUrl}/ads/${adId}`, {
+                method: "DELETE",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              });
               const data = await response.json();
 
               if (data.message) {

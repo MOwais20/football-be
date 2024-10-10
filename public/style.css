@@ -6,6 +6,14 @@ body {
   padding: 20px;
 }
 
+button:disabled {
+  background-color: #cccccc; /* Light grey background */
+  color: #666666;            /* Darker grey text */
+  cursor: not-allowed;       /* Change cursor to indicate action is not allowed */
+  opacity: 0.6;              /* Slightly transparent */
+  border: 1px solid #aaaaaa; /* Light grey border */
+}
+
 h2,
 h3 {
   color: #333;
@@ -78,6 +86,61 @@ button.delete {
 
 button.delete:hover {
   background-color: #c82333;
+}
+
+.switch_section {
+
+  margin-top: 30px;
+
+
+  .button-group {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    max-width: 400px;
+  }
+
+  .button-group button {
+    padding: 15px;
+    width: 45%;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+  }
+
+  .green-button {
+    background-color: #4caf50;
+    color: white;
+  }
+
+  .red-button {
+    background-color: #f44336;
+    color: white;
+  }
+
+  .search-bar {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    max-width: 400px;
+  }
+
+  .search-bar input {
+    width: 70%;
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .search-bar button {
+    width: 25%;
+    background-color: #2196f3;
+    color: white;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+  }
 }
 
 /* Mobile Styles */
