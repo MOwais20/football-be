@@ -51,9 +51,12 @@ module.exports = function (lib, db) {
         return news.data;
       } else {
         let translatedNews = [];
-        // create a for loop to iterate over the news array
+        
+        news.data = news.data.filter((item) => item.content?.length > 0);
+
+
         for (let i = 0; i < news.data.length; i++) {
-          if (i == 7) break;
+          if (i == 10) break;
 
           news.data[i].title = await translate({
             content: news.data[i].title,
