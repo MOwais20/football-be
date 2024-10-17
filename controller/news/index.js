@@ -36,7 +36,7 @@ module.exports = function (lib, db) {
       });
 
       if (cachedData) {
-        return cachedData;
+        return cachedData?.data;
       }
 
 
@@ -79,7 +79,6 @@ module.exports = function (lib, db) {
           timestamp: currentTime,
           data: translatedNews,
         });
-
         return translatedNews;
       }
     } catch (error) {
