@@ -53,7 +53,7 @@ module.exports = function (lib, db) {
         let translatedNews = [];
         // create a for loop to iterate over the news array
         for (let i = 0; i < news.data.length; i++) {
-          if (i == 6) break;
+          if (i == 7) break;
 
           news.data[i].title = await translate({
             content: news.data[i].title,
@@ -74,7 +74,7 @@ module.exports = function (lib, db) {
         }
 
          // Store new data in the DB with a timestamp
-        await db.LocaleNewsContent.insertOne({
+        await LocaleNewsContent.insertOne({
           locale: params.targetLanguage,
           timestamp: currentTime,
           data: translatedNews,
@@ -83,6 +83,7 @@ module.exports = function (lib, db) {
         return translatedNews;
       }
     } catch (error) {
+      console.log("🚀 ~ fetchNews ~ error:", error)
       throw new Error(error.message);
     }
   };
