@@ -1,4 +1,8 @@
 const axios = require("axios");
+const DB = require("../../config/database");
+
+const LocaleNewsContent = DB.collection("localeNewsContent");
+
 module.exports = function (lib, db) {
   const translate = async (obj) => {
     if (!obj.content) {
@@ -22,6 +26,20 @@ module.exports = function (lib, db) {
 
   const fetchNews = async (params) => {
     try {
+
+      const currentTime = new Date();
+      const oneDayAgo = new Date(currentTime.getTime() - 24 * 60 * 60 * 1000);
+
+      const cachedData = await LocaleNewsContent.findOne({
+        timestamp: { $gte: oneDayAgo },
+        locale: params?.targetLanguage,
+      });
+
+      if (cachedData) {
+        return cachedData;
+      }
+
+
       const news = await axios
         .get("https://apis.soccernetnews.com/crypto/news?v=v1")
         .then((response) => response?.data)
@@ -35,7 +53,7 @@ module.exports = function (lib, db) {
         let translatedNews = [];
         // create a for loop to iterate over the news array
         for (let i = 0; i < news.data.length; i++) {
-          if (i == 10) break;
+          if (i == 6) break;
 
           news.data[i].title = await translate({
             content: news.data[i].title,
@@ -54,6 +72,13 @@ module.exports = function (lib, db) {
 
           translatedNews.push(news.data[i]);
         }
+
+         // Store new data in the DB with a timestamp
+        await db.LocaleNewsContent.insertOne({
+          locale: params.targetLanguage,
+          timestamp: currentTime,
+          data: translatedNews,
+        });
 
         return translatedNews;
       }
