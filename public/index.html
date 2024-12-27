@@ -7,7 +7,10 @@
     <!-- Import Vue 3 from CDN -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <!-- Import Vue I18n from CDN -->
-    <script src="https://unpkg.com/vue-i18n@9/dist/vue-i18n.global.js"></script>
+    <!-- <script src="https://unpkg.com/vue-i18n@9/dist/vue-i18n.global.js"></script> -->
+
+    <script src="https://unpkg.com/vue@3"></script>
+    <script src="https://unpkg.com/vue-i18n@10"></script>
     <link rel="stylesheet" href="style.css" />
     <style>
       /* Add any required styling */
@@ -252,7 +255,10 @@
               const data = await response.json();
 
               this.switchUrl = data?.enable_ads?.url || "";
-              console.log("🚀 ~ fetchAdConfig ~ this.switchUrl :", this.switchUrl )
+              console.log(
+                "🚀 ~ fetchAdConfig ~ this.switchUrl :",
+                this.switchUrl
+              );
               this.adConfig = data?.enable_ads?.enable_ads == 1 ? true : false; // Assuming enable_ads is a boolean
             } catch (error) {
               alert("An error occurred while fetching ad configuration.");
