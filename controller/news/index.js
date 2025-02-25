@@ -1,9 +1,7 @@
 const axios = require("axios");
 const connectDB = require("../../config/database");
 
-module.exports = async function (lib, db) {
-  const DB = await connectDB();
-  const LocaleNewsContent = DB.collection("localeNewsContent");
+module.exports = function (lib, db) {
 
   const translate = async (obj) => {
     if (!obj.content) {
@@ -27,6 +25,10 @@ module.exports = async function (lib, db) {
 
   const fetchNews = async (params) => {
     try {
+
+      const DB = await connectDB();
+      const LocaleNewsContent = DB.collection("localeNewsContent");
+
       const currentTime = new Date();
       const oneDayAgo = new Date(currentTime.getTime() - 24 * 60 * 60 * 1000);
 
