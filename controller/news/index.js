@@ -1,9 +1,10 @@
 const axios = require("axios");
-const DB = require("../../config/database");
+const connectDB = require("../../config/database");
 
-const LocaleNewsContent = DB.collection("localeNewsContent");
+module.exports = async function (lib, db) {
+  const DB = await connectDB();
+  const LocaleNewsContent = DB.collection("localeNewsContent");
 
-module.exports = function (lib, db) {
   const translate = async (obj) => {
     if (!obj.content) {
       return;
@@ -26,7 +27,6 @@ module.exports = function (lib, db) {
 
   const fetchNews = async (params) => {
     try {
-
       const currentTime = new Date();
       const oneDayAgo = new Date(currentTime.getTime() - 24 * 60 * 60 * 1000);
 
@@ -39,7 +39,6 @@ module.exports = function (lib, db) {
         return cachedData?.data;
       }
 
-
       const news = await axios
         .get("https://apis.soccernetnews.com/crypto/news?v=v1")
         .then((response) => response?.data)
@@ -51,9 +50,8 @@ module.exports = function (lib, db) {
         return news.data;
       } else {
         let translatedNews = [];
-        
-        news.data = news.data.filter((item) => item.content?.length > 0);
 
+        news.data = news.data.filter((item) => item.content?.length > 0);
 
         for (let i = 0; i < news.data.length; i++) {
           if (i == 10) break;
@@ -76,7 +74,7 @@ module.exports = function (lib, db) {
           translatedNews.push(news.data[i]);
         }
 
-         // Store new data in the DB with a timestamp
+        // Store new data in the DB with a timestamp
         await LocaleNewsContent.insertOne({
           locale: params.targetLanguage,
           timestamp: currentTime,
@@ -85,7 +83,7 @@ module.exports = function (lib, db) {
         return translatedNews;
       }
     } catch (error) {
-      console.log("🚀 ~ fetchNews ~ error:", error)
+      console.log("🚀 ~ fetchNews ~ error:", error);
       throw new Error(error.message);
     }
   };
